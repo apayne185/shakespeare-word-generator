@@ -14,8 +14,7 @@ def preprocess(filename):
 
 
 def create_bigrams(tokens):
-    bigrams=[(tokens[i], tokens[i+1]) for i in range(len(tokens)-1)]
-    return bigrams
+    return [(tokens[i], tokens[i+1]) for i in range(len(tokens)-1)]
 
 
 
@@ -71,8 +70,13 @@ def from_bigram_to_next_token_probs(bigram_counts):
 def sample_next_token(ngram, ngram_prob):
     next_token =  ngram_prob.get(ngram, {})
     if not next_token:
-        return None
+        return random.choice(list(ngram_prob.keys()))
     
-    tokens, probs = zip(*next_token.itmes())
-    return random.choices(tokens, probs)[0]
+    tokens, probs = zip(*next_token.items())
+    next_token = random.choices(tokens, probs)[0]
+
+    if next_token == ngram[-1]:
+        return random.choice(tokens)
+    
+    return next_token
     
