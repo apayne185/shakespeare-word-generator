@@ -13,41 +13,45 @@ def preprocess(filename):
 
 
 
-def create_bigrams(tokens):
-    return [(tokens[i], tokens[i+1]) for i in range(len(tokens)-1)]
+def create_ngrams(tokens, n):
+    return [tuple(tokens[i:i+n]) for i in range(len(tokens)-n+1)]
 
 
 
 
-def from_bigram_to_next_token_counts(bigrams):
-    from_bigram_to_next_token_counts = {}
+def from_ngram_to_next_token_counts(ngrams):
+    ngram_counts = {}
 
-    for b in bigrams:
-        if b not in from_bigram_to_next_token_counts:
-            from_bigram_to_next_token_counts[b] = {}
+    for n in ngrams:
+        prefix = n[:-1]
+        next_token = n[-1]
 
-        next_token = b[1]
-        if next_token not in from_bigram_to_next_token_counts[b]:
-            from_bigram_to_next_token_counts[b][next_token] = 1
+        if prefix not in ngram_counts:
+            ngram_counts[prefix] = {}
+
+        # next_token = n[1]
+        if next_token not in ngram_counts[prefix]:
+            ngram_counts[prefix][next_token] = 1
         else:
-            from_bigram_to_next_token_counts[b][next_token] += 1
+            ngram_counts[prefix][next_token] += 1
 
-
-    return from_bigram_to_next_token_counts
+    return ngram_counts
 
 
 
 
 #task 2
 
-def from_bigram_to_next_token_probs(bigram_counts, alpha=1):
-    from_bigram_to_next_token_probs  = {}
+def from_ngram_to_next_token_probs(ngram_counts, alpha=1):
+    ngram_probs  = {}
 
-    for b, next_token_counts in bigram_counts.items():
+    for prefix, next_token_counts in ngram_counts.items():
         total = sum(next_token_counts.values())
-        from_bigram_to_next_token_probs [b] = {
+        ngram_probs [prefix] = {
             token: count /total for token, count in next_token_counts.items()}
-    return from_bigram_to_next_token_probs 
+        
+    return ngram_probs 
+
 
 
 
@@ -70,9 +74,17 @@ def from_bigram_to_next_token_probs(bigram_counts, alpha=1):
 
 def sample_next_token(ngram, ngram_prob):
     next_token_probs =  ngram_prob.get(ngram, {})
+
     if not next_token_probs:
-        random_gram= random.choice(list(ngram_prob.keys()))
-        return random_gram[-1]
+        for _ in range(3):
+            current_ngram= random.choice(list(ngram_prob.keys()))
+            next_token_probs = ngram_prob.get(current_ngram, {})
+            if next_token_probs:
+                break
+            # return random_gram[-1]
+            
+        if not next_token_probs:
+            return None
     
     tokens, probs = zip(*next_token_probs.items())
     next_token = random.choices(tokens, probs)[0]

@@ -4,20 +4,22 @@ from src.text_generation import *
 def main():
     tokens = preprocess('data/shakespeare.txt')
 
-    bigrams = create_bigrams(tokens)
-    print(f"Bigrams: {bigrams[:10]}")
-    bigram_counts = from_bigram_to_next_token_counts(bigrams)
+    # bigrams = create_bigrams(tokens)
+    # print(f"Bigrams: {bigrams[:10]}")
+    # bigram_counts = from_bigram_to_next_token_counts(bigrams)
+    # bigram_probs = {}
 
-    bigram_probs = {}
-    for b in bigram_counts: 
-        total_count = sum(bigram_counts[b].values())
-        bigram_probs[b] = {token: count / total_count for token, count in bigram_counts[b].items()}
+    for n in [2,3,4]: 
+        ngrams = create_ngrams(tokens,n)
+        ngram_counts = from_ngram_to_next_token_counts(ngrams)
+        ngram_probs = from_ngram_to_next_token_probs(ngram_counts)
 
-    initial_bigram = random.choice(bigrams)   #find first bigram
-    print(f"Initial Bigram: {initial_bigram}")
+        # initial_ngram = random.choice(ngrams)   #find first ngram/prefix
+        initial_ngram = random.choice(list(ngram_probs.keys()))
 
-    gen_text = generate_text_from_ngram(initial_bigram, 50, bigram_probs)
-    print("Generated Text:", gen_text)
+        print(f"\nGenerating text with {n}-grams:")
+        gen_text = generate_text_from_ngram(initial_ngram, 50, ngram_probs)
+        print("Generated Text:", gen_text)
 
 
 

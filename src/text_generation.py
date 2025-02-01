@@ -14,9 +14,13 @@ def generate_text_from_ngram(initial_ngram, length, ngram_probs):
             break
 
         print(f"Current Ngram: {current_ngram}, Next Token: {next_token}")  
+
         if next_token != gen_text[-1]:
             gen_text.append(next_token)
-        current_ngram = current_ngram[1:] + (next_token,)
+
+        current_ngram = tuple(gen_text[-(len(initial_ngram)-1):]) + (next_token,)
+
+
 
     return ' '.join(gen_text)
 
