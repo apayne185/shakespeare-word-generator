@@ -40,12 +40,13 @@ def from_bigram_to_next_token_counts(bigrams):
 
 #task 2
 
-def from_bigram_to_next_token_probs(bigram_counts):
+def from_bigram_to_next_token_probs(bigram_counts, alpha=1):
     from_bigram_to_next_token_probs  = {}
 
-    for b, next_token in bigram_counts.items():
-        total = sum(next_token.values())
-        from_bigram_to_next_token_probs [b] = {token: count/total for token, count in next_token.items()}
+    for b, next_token_counts in bigram_counts.items():
+        total = sum(next_token_counts.values())
+        from_bigram_to_next_token_probs [b] = {
+            token: count /total for token, count in next_token_counts.items()}
     return from_bigram_to_next_token_probs 
 
 
@@ -68,15 +69,16 @@ def from_bigram_to_next_token_probs(bigram_counts):
 #task 3
 
 def sample_next_token(ngram, ngram_prob):
-    next_token =  ngram_prob.get(ngram, {})
-    if not next_token:
-        return random.choice(list(ngram_prob.keys()))
+    next_token_probs =  ngram_prob.get(ngram, {})
+    if not next_token_probs:
+        random_gram= random.choice(list(ngram_prob.keys()))
+        return random_gram[-1]
     
-    tokens, probs = zip(*next_token.items())
+    tokens, probs = zip(*next_token_probs.items())
     next_token = random.choices(tokens, probs)[0]
 
-    if next_token == ngram[-1]:
-        return random.choice(tokens)
+    # if next_token == ngram[-1]:     
+    #     next_token= random.choice(tokens, probs)[0]
     
     return next_token
     
