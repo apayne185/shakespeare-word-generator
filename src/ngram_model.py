@@ -1,19 +1,28 @@
 import string
 import random
+import nltk
+from nltk.corpus import shakespeare
 
+nltk.download('shakespeare')
 
-#task 1
-def preprocess(filename): 
-    with open(filename, 'r') as file:
-        text = file.read().lower()
-        text = text.translate(str.maketrans('', '', string.punctuation))   #remove punctuations 
-        tokens = text.split()   #words=tokens
+    
+def preprocess():
+    shakespeare_txt = []
+    for fild_id in shakespeare.fileids():
+        shakespeare_txt.extend(shakespeare.words(fild_id))
+
+    text = " ".join(shakespeare_txt).lower()
+    text = text.translate(str.maketrans('', '', string.punctuation))   #no punctuations
+    tokens = text.split()
 
     return tokens
 
 
 
+
 def create_ngrams(tokens, n):
+    if len(tokens) < n:
+        return []
     return [tuple(tokens[i:i+n]) for i in range(len(tokens)-n+1)]
 
 
@@ -82,15 +91,12 @@ def sample_next_token(ngram, ngram_prob):
             if next_token_probs:
                 break
             # return random_gram[-1]
-            
+
         if not next_token_probs:
             return None
     
     tokens, probs = zip(*next_token_probs.items())
     next_token = random.choices(tokens, probs)[0]
 
-    # if next_token == ngram[-1]:     
-    #     next_token= random.choice(tokens, probs)[0]
-    
     return next_token
     

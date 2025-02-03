@@ -2,8 +2,7 @@ from src.ngram_model import sample_next_token
 
 
 
-def generate_text_from_ngram(initial_ngram, length, ngram_probs):
-    # gen_text = [initial_ngram[0], initial_ngram[1]]
+def generate_text_from_ngram(initial_ngram, length, ngram_probs, n):
     gen_text = list(initial_ngram)
     current_ngram = initial_ngram
 
@@ -18,7 +17,9 @@ def generate_text_from_ngram(initial_ngram, length, ngram_probs):
         if next_token != gen_text[-1]:
             gen_text.append(next_token)
 
-        current_ngram = tuple(gen_text[-(len(initial_ngram)-1):]) + (next_token,)
+        # current_ngram = tuple(gen_text[-(len(initial_ngram)-1):]) + (next_token,)
+        # current_ngram = tuple(gen_text[-(len(initial_ngram)-1):])
+        current_ngram = tuple(gen_text[-(n-1):])
 
 
 
