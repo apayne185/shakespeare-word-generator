@@ -34,10 +34,11 @@ To install run : `pip install nltk`   and  `pip install pytest`
 
 ### /docs 
 * documentation.md : Complete documentation of the code
-* surveys.md : User surveys 
+
+### main.py 
+* Entry code of the program, connects the code for the different files. 
 
 
-* main.py : Entry code of the program, connects the code for the different files. 
 
-
-
+## Further Analysis
+Further analysis of the code and its logic, along with the user feedback is included within the documentation.md file within /docs. The user feedback Google Doc link is: https://docs.google.com/forms/d/e/1FAIpQLSfW93s3655jikLpDP2IPNTAxYEVUxQwjmXoXbLgB4xCVNeYTQ/viewform?usp=dialog
